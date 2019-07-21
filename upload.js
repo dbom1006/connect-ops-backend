@@ -16,5 +16,21 @@ exports = module.exports = {
 			ContentType: filetype
 		};
 		return s3.getSignedUrl("putObject", params);
+	},
+	put: async function (file, filetype) {
+		var s3 = new aws.S3();
+		var params = {
+			Bucket: config.AWS_BUCKET_NAME,
+			Key: "create-workspaces.csv",
+			ContentType: filetype,
+			Body: Buffer.from(file.data.buffer)
+		};
+		return new Promise((res,rej)=>{
+			s3.putObject(params,(err,data)=>{
+				if(err) res(err);
+				else res(data);
+			});
+		})
 	}
 };
+
