@@ -8,19 +8,18 @@ aws.config.update({
 });
 
 exports = module.exports = {
-	getDescription: async function (filename, filetype) {
+	getDescription: async function (filters = []) {
 		var workspace = new aws.WorkSpaces();
-		var params = {
-			Bucket: config.AWS_BUCKET_NAME,
-			Key: filename,
-			Expires: 60,
-			ContentType: filetype
-		};
-		return new Promise((res,rej)=>{
-			workspace.describeWorkspaces({},(err,data)=>{
-				if(err) rej(err);
-				else res(data);
+		return Promise.all(filters.map(filter => {
+			return new Promise((res, rej) => {
+				workspace.describeWorkspaces({
+					UserName: filter.UserName,
+					DirectoryId: filter.DirectoryId,
+				}, (err, data) => {
+					if (err) rej(err);
+					else res(data.Workspaces[0]);
+				});
 			});
-		})
-	}
+		}));
+}
 };

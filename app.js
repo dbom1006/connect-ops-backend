@@ -22,10 +22,10 @@ app.post('/upload', async (req, res) => {
 	return res.send(data);
 });
 
-app.get('/workspace/description', async (req, res) => {
+app.post('/workspace/description', async (req, res) => {
 	// const {  } = req.query;
-	const data = await workspace.getDescription();
-	return res.send(data);
+	const data = await workspace.getDescription(req.body.filter);
+	return res.send(data.filter(Boolean));
 });
 
 app.post('/workspace/lauch',async (req,res)=>{
