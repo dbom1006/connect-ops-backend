@@ -3,7 +3,8 @@ const config = require('./config');
 
 aws.config.update({
 	accessKeyId: config.AWS_ACCESS_KEY,
-	secretAccessKey: config.AWS_SECRET_KEY
+	secretAccessKey: config.AWS_SECRET_KEY,
+	region: "us-east-1"
 });
 
 exports = module.exports = {
