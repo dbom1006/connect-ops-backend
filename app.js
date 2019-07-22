@@ -5,7 +5,6 @@ const express = require("express");
 const fetch = require('node-fetch');
 const upload = require('./upload');
 const workspace = require('./workspace');
-
 const app = express();
 
 app.use(cors())
@@ -19,7 +18,7 @@ app.post('/upload', async (req, res) => {
 	const { file } = req.files;
 	const { fileType } = req.body;
 	if (!fileType) return res.sendStatus(400);
-	const data = await upload.put(file, fileType);
+	const data = await upload.upload(file);
 	return res.send(data);
 });
 

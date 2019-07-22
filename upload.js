@@ -1,5 +1,7 @@
 const aws = require('aws-sdk');
 const config = require('./config');
+const crypto = require('crypto');
+const fetch = require('node-fetch');
 
 aws.config.update({
 	accessKeyId: config.AWS_ACCESS_KEY,
@@ -18,20 +20,30 @@ exports = module.exports = {
 		};
 		return s3.getSignedUrl("putObject", params);
 	},
-	put: async function (file, filetype) {
-		var s3 = new aws.S3();
+	upload: async (file) => {
+		aws.config.update({
+			accessKeyId: config.AWS_ACCESS_KEY,
+			secretAccessKey: config.AWS_SECRET_KEY,
+			region: "us-east-1"
+		});
+		var s3 = new aws.S3({
+			apiVersion: '2006-03-01',
+			params: {
+				Bucket: config.AWS_BUCKET_NAME,
+			}
+		});
 		var params = {
-			Bucket: config.AWS_BUCKET_NAME,
 			Key: "create-workspaces.csv",
-			ContentType: filetype,
-			Body: Buffer.from(file.data.buffer)
+			ContentType: file.mimetype,
+			Body: file.data,
 		};
-		return new Promise((res,rej)=>{
-			s3.putObject(params,(err,data)=>{
-				if(err) res(err);
+
+		return new Promise((res, rej) => {
+			s3.putObject(params, (err, data) => {
+				if (err) res(err);
 				else res(data);
-			});
-		})
+			})
+		});
 	}
 };
 
