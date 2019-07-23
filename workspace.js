@@ -10,7 +10,7 @@ aws.config.update({
 exports = module.exports = {
 	getDescription: async function (filters = []) {
 		var workspace = new aws.WorkSpaces();
-		return Promise.all(filters.map(filter => {
+		return Promise.all(filters.filter(x => x.DirectoryId && x.UserName).map(filter => {
 			return new Promise((res, rej) => {
 				workspace.describeWorkspaces({
 					UserName: filter.UserName,
@@ -21,5 +21,5 @@ exports = module.exports = {
 				});
 			});
 		}));
-}
+	}
 };
